@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Jost');
+
+body {
+  margin: 0;
+  font-family: 'Jost';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #eeeeee;
+}
+
+input button {font-family: inherit;}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
