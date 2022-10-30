@@ -1,5 +1,7 @@
-import React, { FC, useMemo, useRef, useState } from "react";
-import styles from "./CardComponent.module.css";
+import React, { useContext, useState, useRef, useCallback, useMemo } from "react";
+import { FiltersContext } from "../CardList/CardListComponent";
+import "./CardComponent.less";
+import { CardStatus } from "./CardStatusEnum";
 
 export const CardComponent = React.memo(({
     userId,
@@ -14,20 +16,57 @@ export const CardComponent = React.memo(({
     tasksCount,
     interviewResult
 } : CardInfo) => {
-    return <div key={interviewSolutionId}>
-        <span className={styles.fullName}>{fullName}</span>
-        <span className={styles.vacancy}>{vacancy}</span>
+    const filters = useContext(FiltersContext);
+
+    const cardStatus: CardStatus = useMemo(
+        () => {
+            let currentDateTimeInMs = Date.now();
+            if (startTimeMs === -1) {
+                return CardStatus.isNotStarted;
+            } 
+            if (startTimeMs === 1) {
+                return CardStatus.isInProcess
+            } // todo доделать логику  
+            if (startTimeMs === 0) {
+                return CardStatus.isNotDone
+            }
+            return CardStatus.isDone;
+        }, [startTimeMs, timeToCheckMs]
+    );
+    
+    const isShown: boolean = useMemo(
+        () => {
+            switch(cardStatus) {
+                case CardStatus.isDone: {
+                    return filters!.isDoneFilter;
+                }
+                case CardStatus.isInProcess: {
+                    return filters!.isInProcessFilter;
+                }
+                case CardStatus.isNotDone: {
+                    return filters!.isNotDoneFilter;
+                }
+                case CardStatus.isNotStarted: {
+                    return filters!.isNotStartedFilter;
+                }
+                default: {
+                    return true;
+                }
+            }
+        }, [filters, cardStatus]
+    );  
+
+    return <div key={interviewSolutionId} className='card' style={ isShown ? {} : {display: 'none'}}>
+        <span className='fullName'>{fullName}</span><br />
+        <span className='vacancy'>{vacancy}</span><br />
         <div>
-            <span className={styles.time}>{startTimeMs}</span>
-            <span className={styles.time}>{timeToCheckMs}</span>
+            <span className='time'>{startTimeMs}</span><br />
+            <span className='time'>{timeToCheckMs}</span><br />
         </div>
-        <div className={styles.tasksCount}>
+        <div className='tasksCount'>
             <span>{doneTasksCount}/{tasksCount}</span>
         </div>
-        <div className={styles.reviewButtons}>
-            <button>Отказать</button>
-            <button>Проверить</button>
-        </div>
+        <button className='reviewButton'>Проверить</button>
     </div>
 })
 
