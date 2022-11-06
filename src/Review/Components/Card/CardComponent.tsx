@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./CardComponent.less";
 import { CardInfo, CardInfoWithStatus } from "./CardInfo";
 
@@ -17,6 +17,8 @@ export const CardComponent = React.memo(({
     interviewResult,
     cardStatus
 } : CardInfoWithStatus) => {
+    const { pathname } = useLocation();
+    
     return <div key={interviewSolutionId} className='card'>
         <span className='fullName'>{fullName}</span><br />
         <span className='vacancy'>{vacancy}</span><br />
@@ -27,7 +29,7 @@ export const CardComponent = React.memo(({
         <div className='tasksCount'>
             <span>{doneTasksCount}/{tasksCount}</span>
         </div>
-        <Link to="/">
+        <Link to={`${ pathname }/${ interviewSolutionId }`}>
             <button className='reviewButton'>Проверить</button>
         </Link>
     </div>

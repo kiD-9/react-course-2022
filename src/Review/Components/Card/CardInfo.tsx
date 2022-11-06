@@ -22,6 +22,12 @@ export function GetCardInfosWithStatuses(cardInfos: CardInfo[] | undefined) {
     return cardInfos?.map(cardInfo => GetCardInfoWithStatus(cardInfo))
 }
 
+export const getCards = async () => {
+    const json = await fetch('https://localhost:5001/api/cards').then(res => res.json());
+    const cards: CardInfo[] = JSON.parse(json);
+    return cards;
+};
+
 function GetCardInfoWithStatus(cardInfo: CardInfo) {
     let cardStatus: CardStatus = getCardStatus(cardInfo);
     return {...cardInfo, cardStatus} as CardInfoWithStatus;
