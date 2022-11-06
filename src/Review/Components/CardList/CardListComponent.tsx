@@ -1,66 +1,51 @@
 import React, { FC, useMemo, useRef, useState, useEffect } from "react";
-import { CardComponent, CardInfo } from "../Card/CardComponent";
+import { useQueryClient } from "react-query";
+import { CardComponent } from "../Card/CardComponent";
+import { CardInfo, CardInfoWithStatus, GetCardInfosWithStatuses } from "../Card/CardInfo";
+import { CardStatus } from "../Card/CardStatus";
+import { FiltersComponent, FiltersContext, FiltersContextType } from "../Filters/FiltersComponent";
 import "./CardListComponent.less";
-
-export type FiltersContextType = {
-    isDoneFilter: boolean;
-    isInProcessFilter: boolean;
-    isNotStartedFilter: boolean;
-    isNotDoneFilter: boolean;
-}
-
-export const FiltersContext = React.createContext<FiltersContextType | undefined>(undefined);
 
 export const CardListComponent = React.memo(() => {
     const [cardInfos, setCardInfos] = useState<CardInfo[]>();
-    const [isDoneFilter, setIsDoneFilter] = useState<boolean>(false);
-    const [isInProcessFilter, setIsInProcessFilter] = useState<boolean>(false);
-    const [isNotStartedFilter, setIsNotStartedFilter] = useState<boolean>(false);
-    const [isNotDoneFilter, setIsNotDoneFilter] = useState<boolean>(false);
+    const [cardInfosWithStatuses, setCardInfosWithStatuses] = useState<CardInfoWithStatus[]>();
+
+    const [isDone, setIsDone] = useState<boolean>(true);
+    const [isInProcess, setIsInProcess] = useState<boolean>(false);
+    const [isNotStarted, setIsNotStarted] = useState<boolean>(false);
+    const [isNotDone, setIsNotDone] = useState<boolean>(false);
 
     useEffect(() => {
         fetch('https://localhost:5001/api/cards')
         .then(result => result.json())
-        .then(setCardInfos)         
+        .then(setCardInfos)
+
+        setCardInfosWithStatuses(GetCardInfosWithStatuses(cardInfos));
     }, []);
 
-    const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>, setFilterValue: React.Dispatch<React.SetStateAction<boolean>>) => {
-        setFilterValue(event.target.checked);
-    };
+    const isShown = (status: CardStatus) => {
+        switch (status) {
+            case CardStatus.isDone:
+                return isDone;
+            case CardStatus.isInProcess:
+                return isInProcess;
+            case CardStatus.isNotStarted:
+                return isNotStarted;
+            case CardStatus.isNotDone:
+                return isNotDone;
+            default:
+                return true;
+        }
+    }
 
-    const cards = cardInfos?.map((cardInfo) => {
-        return <FiltersContext.Provider value={{isDoneFilter, isInProcessFilter, isNotStartedFilter, isNotDoneFilter}}>
-            <CardComponent {...cardInfo}/>
-        </FiltersContext.Provider>
-    });
+    const cards = cardInfosWithStatuses?.filter(cardInfo => isShown(cardInfo.cardStatus)).map(cardInfo => <CardComponent {...cardInfo}/>);
 
     return <div className='cardListComponent'>
-        <div className="filters">
-            <div className="filterWrapper">
-                <input type="checkbox" id="doneFilter" name="doneFilter" className="filter" checked={isDoneFilter} onChange={(e) => {handleFilterChange(e, setIsDoneFilter)}}></input>
-                <label htmlFor="doneFilter">Выполнено</label>
-            </div>
-            <div className="filterWrapper">
-                <input type="checkbox" id="inProcessFilter" name="inProcessFilter" className="filter" checked={isInProcessFilter} onChange={(e) => {handleFilterChange(e, setIsInProcessFilter)}}></input>
-                <label htmlFor="inProcessFilter">В процессе</label>
-            </div>
-            <div className="filterWrapper">
-                <input type="checkbox" id="notStartedFilter" name="notStartedFilter" className="filter" checked={isNotStartedFilter} onChange={(e) => {handleFilterChange(e, setIsNotStartedFilter)}}></input>
-                <label htmlFor="notStartedFilter">Не начато</label>
-            </div>
-            <div className="filterWrapper">
-                <input type="checkbox" id="notDoneFilter" name="notDoneFilter" className="filter" checked={isNotDoneFilter} onChange={(e) => {handleFilterChange(e, setIsNotDoneFilter)}}></input>
-                <label htmlFor="notDoneFilter">Не выполнено</label>
-            </div>
-        </div>
+        <FiltersContext.Provider value={{isDone, setIsDone, isInProcess, setIsInProcess, isNotStarted, setIsNotStarted, isNotDone, setIsNotDone}}>
+            <FiltersComponent></FiltersComponent>
+        </FiltersContext.Provider>
         <div className="cardList">
             {cards}
         </div>
-    </div>
-})
-
-export const FiltersComponent = React.memo(() => {
-    return <div className="filters">
-        <input type="checkbox" className=""></input>
     </div>
 })

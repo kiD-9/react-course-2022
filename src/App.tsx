@@ -1,19 +1,24 @@
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { RegistrationComponent } from "./Components/Registration/RegistrationComponent";
 import { CardListComponent } from './Review/Components/CardList/CardListComponent';
 
+const queryClient = new QueryClient()
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/'>
-          <Route index element={<RegistrationComponent/>}></Route>
-          <Route path='/cards' element={<CardListComponent/>}></Route>
-          <Route path='/cards/:id' element={<span>kekeek</span>}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/'>
+            <Route index element={<RegistrationComponent/>}></Route>
+            <Route path='/cards' element={<CardListComponent/>}></Route>
+            <Route path='/cards/:id' element={<span>kekeek</span>}></Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 
