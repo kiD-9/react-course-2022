@@ -1,22 +1,5 @@
-import { CardStatus } from "./CardStatus";
-
-export interface CardInfo {
-    userId: string;
-    interviewSolutionId: string;
-    fullName: string;
-    vacancy: string;
-    startTimeMs: number;
-    timeToCheckMs: number;
-    averageGrade: number;
-    reviewerComment: string;
-    doneTasksCount: number;
-    tasksCount: number;
-    interviewResult: number;
-}
-
-export interface CardInfoWithStatus extends CardInfo {
-    cardStatus: CardStatus
-}
+import { CardInfo, CardInfoWithStatus } from "../../../Models/CardInfo";
+import { CardStatus } from "../../../Models/CardStatus";
 
 export function GetCardInfosWithStatuses(cardInfos: CardInfo[] | undefined) {
     return cardInfos?.map(cardInfo => GetCardInfoWithStatus(cardInfo))

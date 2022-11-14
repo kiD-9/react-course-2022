@@ -1,0 +1,19 @@
+@import '/src/styles.less';
+
+.taskChooser {
+    display: flex;
+    flex-direction: column;
+    background-color: @color-gray;
+
+    & .taskButton {
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        color: @color-black;
+        background-color: @color-white;
+    }
+
+    & .chosen {
+        background-color: @color-green;
+    }
+}

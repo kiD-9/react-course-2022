@@ -1,7 +1,7 @@
-import React, { useContext, useState, useRef, useCallback, useMemo } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CardInfoWithStatus } from "../../../Models/CardInfo";
 import "./CardComponent.less";
-import { CardInfo, CardInfoWithStatus } from "./CardInfo";
 
 export const CardComponent = React.memo(({
     userId,
@@ -18,8 +18,8 @@ export const CardComponent = React.memo(({
     cardStatus
 } : CardInfoWithStatus) => {
     const { pathname } = useLocation();
-    
-    return <div key={interviewSolutionId} className='card'>
+
+    return <div className='card'>
         <span className='fullName'>{fullName}</span><br />
         <span className='vacancy'>{vacancy}</span><br />
         <div>

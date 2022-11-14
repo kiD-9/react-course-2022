@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { RegistrationComponent } from "./Components/Registration/RegistrationComponent";
 import { CardListComponent } from './Review/Components/CardList/CardListComponent';
-import { InterviewReviewComponent } from './Review/Components/InterviewReviewComponent/InterviewReviewComponent';
+import { InterviewReviewComponent } from './Components/InterviewSolution/InterviewReviewComponent/InterviewReviewComponent';
 
 const queryClient = new QueryClient()
 
