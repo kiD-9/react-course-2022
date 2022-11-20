@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { RegistrationComponent } from "./Components/Registration/RegistrationComponent";
-import { CardListComponent } from './Review/Components/CardList/CardListComponent';
 import { InterviewReviewComponent } from './Components/InterviewSolution/InterviewReviewComponent/InterviewReviewComponent';
+import { CardListComponent } from './Components/Cards/CardList/CardListComponent';
 
 const queryClient = new QueryClient()
 
