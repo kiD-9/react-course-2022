@@ -1,9 +1,13 @@
-import React, { FC, useMemo, useRef, useState } from "react";
-import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import React, { FC, useContext, useMemo, useRef, useState } from "react";
+import Editor from "@monaco-editor/react";
+import { TaskSolutionInfosContext } from "../../../Models/TaskSolution/TaskSolutionInfosContext";
+import { TaskSolutionInfo } from "../../../Models/TaskSolution/TaskSolutionInfo";
+import './CodeEditorComponent.less';
 
 export const CodeEditorComponent: React.FC = React.memo(() => {
-    // return <div className="editorWrapper">
-    //     <Editor height="90vh" defaultLanguage="typescript" defaultValue="// some comment"/>
-    // </div>
-    return <Editor height="90vh" defaultLanguage="typescript" defaultValue="// some comment"/> //как вообще фронтендеры верстку делают
+    const context = useContext(TaskSolutionInfosContext);
+    const currentTask = useMemo(() => context?.taskSolutionsInfos[context.chosenTask] as TaskSolutionInfo, [context?.chosenTask]);
+    const startCode = useMemo(() => currentTask.startCode, [context?.chosenTask]);
+    
+    return <Editor className="editorWrapper" height="90vh" defaultLanguage="csharp" value={startCode}/>
 })

@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import { fetchCards } from "../../../Scripts/Review/Queries";
-import { CardComponent } from "../Card/CardComponent";
-import { GetCardInfosWithStatuses } from "../../../Scripts/Review/Cards/InfoFunctions";
+import { CardInfo, CardInfoWithStatus, GetCardInfosWithStatuses } from "../../../Models/CardInfo";
 import { CardStatus } from "../../../Models/CardStatus";
+import { fetchCards } from "../../../Routes/Fetchers";
+import { CardComponent } from "../Card/CardComponent";
 import { FiltersComponent, FiltersContext } from "../Filters/FiltersComponent";
 import "./CardListComponent.less";
-import { CardInfo, CardInfoWithStatus } from "../../../Models/CardInfo";
 
 export const CardListComponent = React.memo(() => {
     const [cardInfos, setCardInfos] = useState<CardInfo[]>();

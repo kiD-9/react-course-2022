@@ -2,12 +2,12 @@ import React, { useState } from "react"
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom"
 import { TaskTextComponent } from "../TaskTextComponent/TaskTextComponent";
-import { fetchInterviewSolutionInfo, fetchTaskSolutionsInfos } from "../../../Scripts/Review/Queries";
 import { TaskSolutionInfo } from "../../../Models/TaskSolution/TaskSolutionInfo";
 import "./InterviewReviewComponent.less";
 import { TaskSolutionInfosContext } from "../../../Models/TaskSolution/TaskSolutionInfosContext";
 import { TaskChooserComponent } from "../TaskChooserComponent/TaskChooserComponent";
 import { CodeEditorComponent } from "../CodeEditorComponent/CodeEditorComponent";
+import { fetchTaskSolutionsInfos } from "../../../Routes/Fetchers";
 
 export const InterviewReviewComponent = React.memo(() => {
     const { id } = useParams();
