@@ -1,21 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Jost');
+@import '/src/styles.less';
 
 body {
   margin: 0;
   font-family: 'Jost';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #eeeeee;
+  background-color: @color-gray;
 }
 
-/* #root {
+html, body, #root, #app, #app>div {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-  background-color: @color-gray;
-} */
+  min-width: 100%;
+  min-height: 100%;
+}
 
 input button {font-family: inherit;}
 

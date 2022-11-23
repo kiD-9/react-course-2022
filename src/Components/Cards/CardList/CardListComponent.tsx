@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { CardInfo, CardInfoWithStatus, GetCardInfosWithStatuses } from "../../../Models/CardInfo";
 import { CardStatus } from "../../../Models/CardStatus";
-import { fetchCards } from "../../../Routes/Fetchers";
+import { getCards } from "../../../Routes/Queries";
 import { CardComponent } from "../Card/CardComponent";
 import { FiltersComponent, FiltersContext } from "../Filters/FiltersComponent";
 import "./CardListComponent.less";
@@ -10,13 +10,15 @@ import "./CardListComponent.less";
 export const CardListComponent = React.memo(() => {
     const [cardInfos, setCardInfos] = useState<CardInfo[]>();
 
+    const { isLoading, data } = useQuery('cards', getCards, {onSuccess: setCardInfos });
+
+    const cardInfosWithStatuses: CardInfoWithStatus[] | undefined = useMemo(() => GetCardInfosWithStatuses(cardInfos), [cardInfos, isLoading])
+
     const [isDone, setIsDone] = useState<boolean>(true);
     const [isInProcess, setIsInProcess] = useState<boolean>(false);
     const [isNotStarted, setIsNotStarted] = useState<boolean>(false);
     const [isNotDone, setIsNotDone] = useState<boolean>(false);
 
-    const { isLoading, data } = useQuery('cards', fetchCards, {onSuccess: setCardInfos })
-    const cardInfosWithStatuses: CardInfoWithStatus[] | undefined = useMemo(() => GetCardInfosWithStatuses(cardInfos), [cardInfos])
 
     const isShown = (status: CardStatus) => {
         switch (status) {

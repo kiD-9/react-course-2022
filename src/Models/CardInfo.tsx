@@ -3,15 +3,22 @@ import { CardStatus } from "./CardStatus";
 export interface CardInfo {
     userId: string;
     interviewSolutionId: string;
-    fullName: string;
+    firstName: string;
+    surname: string;
     vacancy: string;
     startTimeMs: number;
+    endTimeMs: number;
     timeToCheckMs: number;
     averageGrade: number;
     reviewerComment: string;
     doneTasksCount: number;
     tasksCount: number;
     interviewResult: number;
+    IsSubmittedByCandidate: boolean;
+    IsSolutionTimeExpired: boolean;
+    HasReviewerCheckResult: boolean;
+    HasHrCheckResult: boolean;
+    ProgrammingLanguage: string;
 }
 
 export interface CardInfoWithStatus extends CardInfo {
@@ -19,12 +26,7 @@ export interface CardInfoWithStatus extends CardInfo {
 }
 
 export function GetCardInfosWithStatuses(cardInfos: CardInfo[] | undefined) {
-    return cardInfos?.map(cardInfo => GetCardInfoWithStatus(cardInfo))
-}
-
-function GetCardInfoWithStatus(cardInfo: CardInfo) {
-    let cardStatus: CardStatus = getCardStatus(cardInfo);
-    return {...cardInfo, cardStatus} as CardInfoWithStatus;
+    return cardInfos?.map(cardInfo => ({...cardInfo, cardStatus: getCardStatus(cardInfo)} as CardInfoWithStatus));
 }
 
 function getCardStatus(cardInfo: CardInfo) {
@@ -35,7 +37,7 @@ function getCardStatus(cardInfo: CardInfo) {
     } 
     if (cardInfo.startTimeMs === 1) {
         return CardStatus.isInProcess
-    } // todo доделать логику  
+    } // todo доделать логику
     if (cardInfo.startTimeMs === 0) {
         return CardStatus.isNotDone
     }

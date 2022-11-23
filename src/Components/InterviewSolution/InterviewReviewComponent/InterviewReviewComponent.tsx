@@ -7,14 +7,14 @@ import "./InterviewReviewComponent.less";
 import { TaskSolutionInfosContext } from "../../../Models/TaskSolution/TaskSolutionInfosContext";
 import { TaskChooserComponent } from "../TaskChooserComponent/TaskChooserComponent";
 import { CodeEditorComponent } from "../CodeEditorComponent/CodeEditorComponent";
-import { fetchTaskSolutionsInfos } from "../../../Routes/Fetchers";
+import { getTaskSolutionsInfos } from "../../../Routes/Queries";
 
 export const InterviewReviewComponent = React.memo(() => {
     const { id } = useParams();
     const [taskSolutionsInfos, setTaskSolutionsInfos] = useState<TaskSolutionInfo[]>([]);
     const [chosenTask, setChosenTask] = useState<number>(0);
     // const interviewSolutionInfoResponse = useQuery(['interviewSolution', id], () => { return fetchInterviewSolutionInfo(id) }, {onSuccess: () => {  } })
-    const taskSolutionsInfosResponse = useQuery(['taskSolutions', id], () => { return fetchTaskSolutionsInfos(id) }, {onSuccess: setTaskSolutionsInfos })
+    const taskSolutionsInfosResponse = useQuery(['taskSolutions', id], () => { return getTaskSolutionsInfos(id) }, {onSuccess: setTaskSolutionsInfos })
     if (taskSolutionsInfosResponse.isLoading) return <div>Loading</div>
 
     return <div className="interviewReview">
