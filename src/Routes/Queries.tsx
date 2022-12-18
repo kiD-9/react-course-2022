@@ -1,18 +1,30 @@
 import axios from "axios";
 import { Md5 } from "ts-md5";
+import { CodeExecutionRequest } from "../Models/CodeExecution/CodeExecutionRequest";
+import { EntryPoint } from "../Models/CodeExecution/EntryPoint";
 
 export const getCards = () => {
+    checkToken();
     return axios.get('https://localhost:5001/api/cards')
         .then(response => response.data);
 };
 
 export const getInterviewSolutionInfo = (interviewSolutionId: string | undefined) => {
+    checkToken();
     return axios.get(`https://localhost:5001/api/interviews/solution?id=${ interviewSolutionId }`)
         .then(response => response.data);
 }
 
 export const getTaskSolutionsInfos = (interviewSolutionId: string | undefined) => {
+    checkToken();
     return axios.get(`https://localhost:5001/api/contest/task-slns-info?id=${ interviewSolutionId }`)
+        .then(response => response.data);
+}
+
+export const executeCode = (code: string, entryPoint: EntryPoint) => {
+    checkToken();
+    const executionRequst: CodeExecutionRequest = {code: code, entryPoint: entryPoint};
+    return axios.put(`https://localhost:5001/api/compile/execute`, executionRequst)
         .then(response => response.data);
 }
 
@@ -48,12 +60,6 @@ const setAuthorizationHeader = (token: string) => {
 }
 
 const md5EncryptString = (str: string) => Md5.hashStr(str).toString();
-
-export enum RequestMethodType {
-    get = 'GET',
-    post = 'POST',
-    put = 'PUT',
-}
 
 export enum ResponseCode {
     undefinedError = -1,
