@@ -16,7 +16,6 @@ export const InterviewContestComponent = React.memo(() => {
     const [chosenTask, setChosenTask] = useState<number>(0);
     const taskSolutionsInfosResponse = useQuery(['taskSolutions', interviewSolutionId], () => { return getTaskSolutionsInfos(interviewSolutionId) }, {onSuccess: setTaskSolutionsInfos })
     if (taskSolutionsInfosResponse.isLoading) return <div>Loading</div>
-    console.log(taskSolutionsInfos);
 
     return <div className="interviewContest">
         <TaskSolutionInfosContext.Provider value={{taskSolutionsInfos, setTaskSolutionsInfos, chosenTask, setChosenTask}}>

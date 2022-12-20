@@ -1,10 +1,9 @@
-import React, { FC, useContext, useMemo, useRef, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { TaskSolutionInfosContext } from "../../../Models/TaskSolution/TaskSolutionInfosContext";
 import { TaskSolutionInfo } from "../../../Models/TaskSolution/TaskSolutionInfo";
 import './CodeEditorComponent.less';
 import { executeCode } from "../../../Routes/Queries";
-import { useQuery } from "react-query";
 import { EntryPoint } from "../../../Models/CodeExecution/EntryPoint";
 import { CodeExecutionResultResponse } from "../../../Models/CodeExecution/CodeExecutionResultResponse";
 
@@ -24,9 +23,24 @@ export const CodeEditorComponent: React.FC = React.memo(() => {
     
     return <div className="editorWrapper">
         <button className="runBtn" onClick={runCode}>Run</button>
-        <Editor height="90vh" defaultLanguage="csharp" value={code} onChange={(value) => {setCode(value)}}/>
-        {executionResult?.output.length !== 0 && (
-            <span className="executionResult">{executionResult?.output}</span>
-        )}
+        <Editor height="70vh" defaultLanguage="csharp" value={code} onChange={(value) => {setCode(value)}}/>
+        <div className="executionResult">
+            {!!executionResult && (executionResult.success
+            ? (
+                <span className="success">
+                    {executionResult.output.map(line => <span>
+                        {line} <br />
+                    </span>)}
+                </span>
+            )
+            : (
+                <span className="errors">
+                    {executionResult.errors.map(e => <span>
+                        {`(${e.startLine + 1}, ${e.startChar + 1}): [${e.errorCode}] ${e.message}`} <br />
+                    </span>
+                    )}
+                </span>
+            ))}
+        </div>
     </div>
 })
