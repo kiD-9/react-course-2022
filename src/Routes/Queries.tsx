@@ -2,6 +2,7 @@ import axios from "axios";
 import { Md5 } from "ts-md5";
 import { CodeExecutionRequest } from "../Models/CodeExecution/CodeExecutionRequest";
 import { EntryPoint } from "../Models/CodeExecution/EntryPoint";
+import { InterviewContest } from "../Models/Interviews/InterviewContest";
 import { InvitationRequest } from "../Models/Invitation/InvitationRequest";
 import { UserRegistrationParameters } from "../Models/UserRegistration/UserRegistrationParameters";
 
@@ -10,6 +11,18 @@ export const getCards = () => {
     return axios.get('https://localhost:5001/api/cards')
         .then(response => response.data);
 };
+
+export const getInterviewSolutionForContest = () => {
+    checkToken();
+    return axios.get(`https://localhost:5001/api/contest/i-sln-info`)
+        .then(response => response.data);
+}
+
+export const startInterviewSolution = (interviewSolution: InterviewContest) => {
+    checkToken();
+    return axios.put(`https://localhost:5001/api/contest/start-i-sln?id=${interviewSolution.id}`)
+        .then(response => response.data);
+}
 
 export const getInterviewSolutionInfo = (interviewSolutionId: string | undefined) => {
     checkToken();
@@ -36,14 +49,15 @@ export const createInvitation = (role: string, interviewId: string) => {
         .then(response => response.data.invitation);
 }
 
-export const registerUser = (registerParams: UserRegistrationParameters) => {
-    let responseResult;
-    axios.post(`https://localhost:5001/api/users/register`, registerParams)
+export const registerUser = (invitation: string, firstName: string, surname: string, email: string, password: string, phonenumber: string) => {
+    let registerParams: UserRegistrationParameters = {firstName: firstName, surname: surname, email: email, phonenumber: phonenumber, passwordHash: md5EncryptString(password)}
+    return axios.post(`https://localhost:5001/api/users/register?invite=${invitation}`, registerParams)
         .then(response => {
-            responseResult = response.data;
+            return ResponseCode.ok;
+        })
+        .catch(error => {
+            return ResponseCode.badRequest;
         });
-    console.log(responseResult) //доделать нормально
-    //setJWT(); дотюнить авторизацию сразу
 }
 
 export const executeCode = (code: string, entryPoint: EntryPoint) => {
@@ -89,5 +103,6 @@ const md5EncryptString = (str: string) => Md5.hashStr(str).toString();
 export enum ResponseCode {
     undefinedError = -1,
     ok = 200,
+    badRequest = 400,
     unauthorized = 401,
 }

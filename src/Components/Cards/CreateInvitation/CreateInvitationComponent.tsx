@@ -27,7 +27,7 @@ export const CreateInvitationComponent = React.memo(() => {
                 {isLoading
                 ? <div>Loading</div>
                 : (<div className="interviews">
-                    {interviews.map(interview => <CreateInvitationButton {...interview} key={interview.id}/>)}
+                    {interviews.map(interview => <CreateInvitationButton {...interview}/>)}
                 </div>)}
             </span>}
         </div>

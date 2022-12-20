@@ -1,37 +1,99 @@
-import React, { FC, useMemo, useRef, useState } from "react";
-// import styles from "./RegistrationComponent.module.css";'
+import React, { FC, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { InterviewContest } from "../../Models/Interviews/InterviewContest";
+import { getInterviewSolutionForContest, registerUser, ResponseCode, setJWT, startInterviewSolution } from "../../Routes/Queries";
+import { emailPattern } from "../Login/LoginComponent";
 import './RegistrationComponent.less';
 
 export const RegistrationComponent: FC = React.memo(() => {
-    const [firstName, setFirstName] = useState<string>();
-    const [surname, setSurname] = useState<string>();
-    const [phoneNumber, setPhoneNumber] = useState<string>();
-    const [email, setEmail] = useState<string>();
-    const [password, setPassword] = useState<string>();
-    const [confirmPassword, setConfirmPassword] = useState<string>();
+    const { id: invitationId } = useParams();
+    
+    const logo = '/assets/coderev-logo.svg';
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [registrationResponseCode, setRegistrationResponseCode] = useState<ResponseCode>(ResponseCode.undefinedError);
+    const [authResponseCode, setAuthResponseCode] = useState<ResponseCode>(ResponseCode.undefinedError);
+    const nav = useNavigate()
 
-    return <div className='registrationComponent'>
-        <h1 className="registrationText">Регистрация</h1>
-        <form name="registrationForm" className="registrationForm">
+    const interviewSolution = useRef<InterviewContest>()
+    useQuery('contestInterview', getInterviewSolutionForContest,
+        { enabled: authResponseCode === ResponseCode.ok && !interviewSolution.current, onSuccess: (data) => { interviewSolution.current = data }});
+
+    useQuery(['startInterviewSolution', interviewSolution.current],
+        () => { return startInterviewSolution(interviewSolution.current) },
+        { enabled: authResponseCode === ResponseCode.ok && !!interviewSolution.current, onSuccess: () => navToContest() });
+
+    if (authResponseCode === ResponseCode.ok && !interviewSolution) {
+        setInterval(() => {
+        }, 2000)
+    }
+
+    const navToContest = () => {
+        nav(`/contest/${interviewSolution.current.id}`);
+    }
+
+    const onSubmit = async (formData: any) => {
+        let firstName: string = formData.firstName;
+        let surname: string = formData.surname;
+        let phoneNumber: string = formData.phoneNumber;
+        let email: string = formData.email;
+        let password: string = formData.password;
+        
+        let responseCode = await registerUser(invitationId, firstName, surname, email, password, phoneNumber);
+        setRegistrationResponseCode(responseCode);
+
+        if (responseCode !== ResponseCode.ok) {
+            return;
+        }
+
+        responseCode = await setJWT(email, password);
+        setAuthResponseCode(responseCode);
+
+        if (responseCode !== ResponseCode.ok) {
+            return;
+        }
+    }
+
+    return (
+    <div className='registrationComponent'>
+        <img className='logo' src={logo} alt="pretty logo"/>
+        <form name="registrationForm" className="registrationForm" onSubmit={handleSubmit(onSubmit)}>
             <div className='inputDiv formChild'>
-                <input type="text" className='input' placeholder="Имя" required/>
+                <input {...register("firstName", {required: true})} type="text" className='input' placeholder="Имя"/>
             </div>
+            {errors.firstName && <span className='error'>Необходимо заполнитель это поле</span>}
+
             <div className='inputDiv formChild'>
-                <input type="text" className='input' placeholder="Фамилия" required/>
+                <input {...register("surname", {required: true})} type="text" className='input' placeholder="Фамилия"/>
             </div>
+            {errors.surname && <span className='error'>Необходимо заполнитель это поле</span>}
+
             <div className='inputDiv formChild'>
-                <input type="text" className='input' placeholder="Телефон" required/>
+                <input {...register("phoneNumber", {required: true, pattern: phonePattern})} type="tel" className='input' placeholder="Телефон"/>
             </div>
+            {errors.phoneNumber && <span className='error'>Необходимо заполнитель это поле</span>}
+
             <div className='inputDiv formChild'>
-                <input type="text" className='input' placeholder="Почта" required/>
+                <input {...register("email", {required: true, pattern: emailPattern})} type="text" className='input' placeholder="Почта"/>
             </div>
+            {errors.email && <span className='error'>Необходимо заполнитель это поле</span>}
+
             <div className='inputDiv formChild'>
-                <input type="password" className='input' placeholder="Пароль" required/>
+                <input {...register("password", {required: true})} type="password" className='input' placeholder="Пароль"/>
             </div>
-            <div className='inputDiv formChild'>
-                <input type="password" className='input' placeholder="Повторите пароль" required/>
+            {errors.password && <span className='error'>Необходимо заполнитель это поле</span>}
+
+            {/* <div className='inputDiv formChild'>
+                <input {...register("confirmPassword", {required: true})} type="password" className='input' placeholder="Повторите пароль"/>
             </div>
-            <button type="submit" className='submitButton formChild'>Продолжить</button>
+            {errors.confirmPassword && <span className='error'>Необходимо заполнитель это поле</span>} */}
+
+            <input type="submit" className='submitButton formChild' value={'Зарегистрироваться'}/>
         </form>
-    </div>
+        {registrationResponseCode === ResponseCode.badRequest && <span className='error'>Не удалось зарегистрироваться</span>}
+        {authResponseCode === ResponseCode.unauthorized && <span className='error'>Не удалось войти, попробуйте позже</span>}
+    </div>)
 })
+
+export const phonePattern: RegExp = /[0-9]{10}/;

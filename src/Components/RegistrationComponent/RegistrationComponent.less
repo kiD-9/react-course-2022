@@ -8,23 +8,23 @@
     border-radius: 20px;
     background-color: @color-white;
     box-sizing: border-box;
+    row-gap: 32px;
+    padding-top: 3%;
     padding-bottom: 3%;
-        
-    & .registrationText {
-        text-align: center;
-        color: @color-black;
-        letter-spacing: .3rem;
-        font-size: 3em;
+
+    & .logo {
+        align-self: center;
+        width: 56%;
     }
 
     & .registrationForm {
         display: flex;
         flex-flow: column;
         align-items: center;
-        row-gap: 32px;
+        row-gap: 16px;
 
         & .formChild {
-            width: 64%;
+            width: 72%;
             height: 50px;
             border-radius: 10px;
         }
@@ -47,7 +47,8 @@
     
         & .submitButton {
             border: none;
-            font-size: 1.75em;
+            font-size: 1.25em;
+            letter-spacing: .3rem;
             color: @color-white;
             background-color: @color-red;
             
@@ -55,5 +56,10 @@
                 background-color: @color-error;
             }
         }
+    }
+
+    & .error {
+        color: @color-error;
+        text-align: center;
     }
 }
