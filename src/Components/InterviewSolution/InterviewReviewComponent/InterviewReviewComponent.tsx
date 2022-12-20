@@ -6,11 +6,12 @@ import { TaskSolutionInfo } from "../../../Models/TaskSolution/TaskSolutionInfo"
 import "./InterviewReviewComponent.less";
 import { TaskSolutionInfosContext } from "../../../Models/TaskSolution/TaskSolutionInfosContext";
 import { TaskChooserComponent } from "../TaskChooserComponent/TaskChooserComponent";
-import { CodeEditorComponent } from "../CodeEditorComponent/CodeEditorComponent";
+import { CodeEditorComponent, CodeEditorProps } from "../CodeEditorComponent/CodeEditorComponent";
 import { getTaskSolutionsInfos } from "../../../Routes/Queries";
 
 export const InterviewReviewComponent = React.memo(() => {
     const { id } = useParams();
+
     const [taskSolutionsInfos, setTaskSolutionsInfos] = useState<TaskSolutionInfo[]>([]);
     const [chosenTask, setChosenTask] = useState<number>(0);
     // const interviewSolutionInfoResponse = useQuery(['interviewSolution', id], () => { return fetchInterviewSolutionInfo(id) }, {onSuccess: () => {  } })
@@ -22,7 +23,7 @@ export const InterviewReviewComponent = React.memo(() => {
         <TaskSolutionInfosContext.Provider value={{taskSolutionsInfos, setTaskSolutionsInfos, chosenTask, setChosenTask}}>
             <TaskChooserComponent/>
             <TaskTextComponent/>
-            <CodeEditorComponent/>
+            <CodeEditorComponent {...{ isReadonly: true }}/>
         </TaskSolutionInfosContext.Provider>
     </div>
 })

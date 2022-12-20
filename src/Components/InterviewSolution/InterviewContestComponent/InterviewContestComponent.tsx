@@ -21,7 +21,7 @@ export const InterviewContestComponent = React.memo(() => {
         <TaskSolutionInfosContext.Provider value={{taskSolutionsInfos, setTaskSolutionsInfos, chosenTask, setChosenTask}}>
             <TaskChooserComponent/>
             <TaskTextComponent/>
-            <CodeEditorComponent/>
+            <CodeEditorComponent {...{ isReadonly: false }}/>
         </TaskSolutionInfosContext.Provider>
     </div>
 })
