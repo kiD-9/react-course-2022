@@ -2,6 +2,8 @@ import axios from "axios";
 import { Md5 } from "ts-md5";
 import { CodeExecutionRequest } from "../Models/CodeExecution/CodeExecutionRequest";
 import { EntryPoint } from "../Models/CodeExecution/EntryPoint";
+import { InvitationRequest } from "../Models/Invitation/InvitationRequest";
+import { UserRegistrationParameters } from "../Models/UserRegistration/UserRegistrationParameters";
 
 export const getCards = () => {
     checkToken();
@@ -15,10 +17,33 @@ export const getInterviewSolutionInfo = (interviewSolutionId: string | undefined
         .then(response => response.data);
 }
 
+export const getInterviews = () => {
+    checkToken();
+    return axios.get(`https://localhost:5001/api/interviews`)
+        .then(response => response.data);
+}
+
 export const getTaskSolutionsInfos = (interviewSolutionId: string | undefined) => {
     checkToken();
     return axios.get(`https://localhost:5001/api/contest/task-slns-info?id=${ interviewSolutionId }`)
         .then(response => response.data);
+}
+
+export const createInvitation = (role: string, interviewId: string) => {
+    checkToken();
+    const invitationRequst: InvitationRequest = {role: role, interviewId: interviewId};
+    return axios.post(`https://localhost:5001/api/invitations/create`, invitationRequst)
+        .then(response => response.data.invitation);
+}
+
+export const registerUser = (registerParams: UserRegistrationParameters) => {
+    let responseResult;
+    axios.post(`https://localhost:5001/api/users/register`, registerParams)
+        .then(response => {
+            responseResult = response.data;
+        });
+    console.log(responseResult) //доделать нормально
+    //setJWT(); дотюнить авторизацию сразу
 }
 
 export const executeCode = (code: string, entryPoint: EntryPoint) => {

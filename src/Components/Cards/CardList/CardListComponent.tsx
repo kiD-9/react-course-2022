@@ -4,6 +4,7 @@ import { CardInfo, CardInfoWithStatus, GetCardInfosWithStatuses } from "../../..
 import { CardStatus } from "../../../Models/CardStatus";
 import { getCards } from "../../../Routes/Queries";
 import { CardComponent } from "../Card/CardComponent";
+import { CreateInvitationComponent } from "../CreateInvitation/CreateInvitationComponent";
 import { FiltersComponent, FiltersContext } from "../Filters/FiltersComponent";
 import "./CardListComponent.less";
 
@@ -36,9 +37,12 @@ export const CardListComponent = React.memo(() => {
     }
 
     return <div className='cardListComponent'>
-        <FiltersContext.Provider value={{isDone, setIsDone, isInProcess, setIsInProcess, isNotStarted, setIsNotStarted, isNotDone, setIsNotDone}}>
-            <FiltersComponent></FiltersComponent>
-        </FiltersContext.Provider>
+        <div className="sideColumn">
+            <FiltersContext.Provider value={{isDone, setIsDone, isInProcess, setIsInProcess, isNotStarted, setIsNotStarted, isNotDone, setIsNotDone}}>
+                <FiltersComponent></FiltersComponent>
+            </FiltersContext.Provider>
+            <CreateInvitationComponent></CreateInvitationComponent>
+        </div>
         {isLoading
             ? <div>Loading</div>
             : (<div className="cardList">
